@@ -1,7 +1,7 @@
 // lib/auth-api.ts
 import axios from 'axios';
 
-const API_URL_AUTH = process.env.NEXT_PUBLIC_API_URL_AUTH|| 'http://localhost:3001/auth';
+const API_URL_AUTH = process.env.NEXT_PUBLIC_API_URL_AUTH|| 'https://comida-rapida-back-end-o5k9.vercel.app/auth';
 
 const authApi = axios.create({
   baseURL: API_URL_AUTH,
