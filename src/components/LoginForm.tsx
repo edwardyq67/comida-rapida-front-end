@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/store/authStore";
 import Link from "next/link";
+import { Home } from "lucide-react"; // 👈 Importamos el ícono
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -10,30 +11,39 @@ export default function LoginForm() {
   const { login, isLoading, error, clearError, isAuthenticated } = useAuthStore();
   const router = useRouter();
 
- const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  clearError();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    clearError();
 
-  try {
-    await login({ email, password });
-    
-    // Pequeña pausa para permitir que el estado se actualice
-    await new Promise(resolve => setTimeout(resolve, 0));
-    
-    // Leer el estado ACTUAL del store
-    const currentState = useAuthStore.getState();
-    console.log("Estado actual:", currentState.isAuthenticated);
-    
-    if (currentState.isAuthenticated) {
-      router.push("/admin");
+    try {
+      await login({ email, password });
+
+      // Pequeña pausa para permitir que el estado se actualice
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      // Leer el estado ACTUAL del store
+      const currentState = useAuthStore.getState();
+      console.log("Estado actual:", currentState.isAuthenticated);
+
+      if (currentState.isAuthenticated) {
+        router.push("/admin");
+      }
+    } catch (error) {
+      console.error("Error de login:", error);
     }
-  } catch (error) {
-    console.error("Error de login:", error);
-  }
-};
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center p-8">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8">
+      <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 relative">
+        {/* 🔹 Botón de Home arriba a la izquierda */}
+        <Link
+          href="/"
+          className="absolute top-4 left-4 text-gray-500 hover:text-blue-600 transition"
+        >
+          <Home className="h-6 w-6" />
+        </Link>
+
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">
             Iniciar Sesión
@@ -96,7 +106,10 @@ export default function LoginForm() {
           <div className="text-center pt-4 border-t border-gray-200">
             <p className="text-gray-600 text-sm">
               ¿No tienes una cuenta?{" "}
-              <Link href="/register" className="text-blue-600 hover:underline font-medium">
+              <Link
+                href="/register"
+                className="text-blue-600 hover:underline font-medium"
+              >
                 Regístrate aquí
               </Link>
             </p>

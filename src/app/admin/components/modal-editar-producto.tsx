@@ -71,13 +71,27 @@ export function ModalEditarProducto({
     tamanosDisponibles: [],
   });
 
-  // Función para cargar los datos del producto
+  // Función para cargar los datos del producto - CORREGIDA
   const cargarProducto = async (id: number) => {
     try {
       setCargandoProducto(true);
       const producto = await publicApi.producto.findOne(id);
       
       // Mapear los datos del producto al formato correcto del formulario
+      const ingredientesMapeados = producto.ingredientes?.map((ing) => ({
+        ingrediente_id: ing.ingrediente?.id || ing.ingrediente_id,
+        opcional: ing.opcional || false,
+        por_defecto: ing.por_defecto !== undefined ? ing.por_defecto : true,
+      })) || [];
+
+      const opcionesMapeadas = producto.opciones?.map((op) => ({
+        opcion_id: op.opcion?.id || op.opcion_id,
+      })) || [];
+
+      const tamanosMapeados = producto.tamanosDisponibles?.map((tam) => ({
+        tamano_id: tam.tamano?.id || tam.tamano_id,
+        precio: tam.precio || producto.precio || 0,
+      })) || [];
       setFormData({
         nombre: producto.nombre || "",
         descripcion: producto.descripcion || "",
@@ -86,24 +100,9 @@ export function ModalEditarProducto({
         activo: producto.activo,
         categoria_id: producto.categoria?.id || producto.categoria_id || 0,
         tamano_id: producto.tamano?.id || producto.tamano_id || undefined,
-
-        // Mapear ingredientes correctamente
-        ingredientes: producto.ingredientes?.map((ing) => ({
-          ingrediente_id: ing.ingrediente?.id || ing.ingrediente_id,
-          opcional: ing.opcional || false,
-          por_defecto: ing.por_defecto !== undefined ? ing.por_defecto : true,
-        })) || [],
-
-        // Mapear opciones correctamente
-        opciones: producto.opciones?.map((op) => ({
-          opcion_id: op.opcion?.id || op.opcion_id,
-        })) || [],
-
-        // Mapear tamaños disponibles correctamente
-        tamanosDisponibles: producto.tamanosDisponibles?.map((tam) => ({
-          tamano_id: tam.tamano?.id || tam.tamano_id,
-          precio: tam.precio || producto.precio || 0,
-        })) || [],
+        ingredientes: ingredientesMapeados,
+        opciones: opcionesMapeadas,
+        tamanosDisponibles: tamanosMapeados,
       });
     } catch (error) {
       console.error("Error cargando producto:", error);
@@ -136,25 +135,26 @@ export function ModalEditarProducto({
     }
   };
 
-  // Cargar datos cuando se abre el modal
+  // Cargar datos cuando se abre el modal - CORREGIDO
   useEffect(() => {
-    if (isOpen && productoId) {
+    if (isOpen) {
       cargarDatos();
-      cargarProducto(productoId);
-    } else if (isOpen) {
-      // Reset form cuando se abre para crear nuevo
-      setFormData({
-        nombre: "",
-        descripcion: "",
-        imagen: "",
-        precio: 0,
-        activo: true,
-        categoria_id: 0,
-        ingredientes: [],
-        opciones: [],
-        tamanosDisponibles: [],
-      });
-      cargarDatos();
+      if (productoId) {
+        cargarProducto(productoId);
+      } else {
+        // Reset form cuando se abre sin productoId (por si acaso)
+        setFormData({
+          nombre: "",
+          descripcion: "",
+          imagen: "",
+          precio: 0,
+          activo: true,
+          categoria_id: 0,
+          ingredientes: [],
+          opciones: [],
+          tamanosDisponibles: [],
+        });
+      }
     }
   }, [isOpen, productoId]);
 
@@ -165,7 +165,7 @@ export function ModalEditarProducto({
     }));
   };
 
-  // Manejar ingredientes
+  // Manejar ingredientes - CORREGIDO (quitado readOnly)
   const handleIngredienteClick = (ingredienteId: number, checked: boolean) => {
     setFormData((prev) => {
       const ingredientesActuales = prev.ingredientes || [];
@@ -195,7 +195,7 @@ export function ModalEditarProducto({
     });
   };
 
-  // Manejar cambios en propiedades de ingredientes
+  // Manejar cambios en propiedades de ingredientes - CORREGIDO
   const handleIngredientePropChange = (
     ingredienteId: number,
     field: "opcional" | "por_defecto",
@@ -216,7 +216,7 @@ export function ModalEditarProducto({
     });
   };
 
-  // Manejar opciones
+  // Manejar opciones - CORREGIDO (quitado readOnly)
   const handleOpcionClick = (opcionId: number, checked: boolean) => {
     setFormData((prev) => {
       const opcionesActuales = prev.opciones || [];
@@ -244,7 +244,7 @@ export function ModalEditarProducto({
     });
   };
 
-  // Manejar tamaños disponibles
+  // Manejar tamaños disponibles - CORREGIDO (quitado readOnly)
   const handleTamanoDisponibleClick = (tamanoId: number, checked: boolean) => {
     setFormData((prev) => {
       const tamanosActuales = prev.tamanosDisponibles || [];
@@ -257,7 +257,7 @@ export function ModalEditarProducto({
               ...tamanosActuales,
               {
                 tamano_id: tamanoId,
-                precio: formData.precio || 0,
+                precio: prev.precio || 0, // Usar el precio actual del formData
               },
             ],
           };
@@ -273,7 +273,7 @@ export function ModalEditarProducto({
     });
   };
 
-  // Actualizar precio de un tamaño disponible
+  // Actualizar precio de un tamaño disponible - CORREGIDO
   const handlePrecioTamanoChange = (tamanoId: number, precio: number) => {
     setFormData((prev) => {
       const nuevosTamanos = (prev.tamanosDisponibles || []).map((t) => {
@@ -309,13 +309,18 @@ export function ModalEditarProducto({
         return;
       }
 
+      // Preparar datos para enviar
       const productoData: UpdateProductoDto = {
-        ...formData,
+        nombre: formData.nombre,
+        descripcion: formData.descripcion,
+        imagen: formData.imagen,
         precio: typeof formData.precio === "string" ? parseFloat(formData.precio) : formData.precio,
+        activo: formData.activo,
         categoria_id: typeof formData.categoria_id === "string" ? parseInt(formData.categoria_id) : formData.categoria_id,
-        ingredientes: formData.ingredientes?.filter((ing) => ing) || [],
-        opciones: formData.opciones?.filter((op) => op) || [],
-        tamanosDisponibles: formData.tamanosDisponibles?.filter((t) => t) || [],
+        tamano_id: formData.tamano_id,
+        ingredientes: formData.ingredientes || [],
+        opciones: formData.opciones || [],
+        tamanosDisponibles: formData.tamanosDisponibles || [],
       };
 
       await adminApi.producto.update(productoId, productoData);
@@ -548,7 +553,7 @@ export function ModalEditarProducto({
                             <input
                               type="checkbox"
                               checked={isSelected}
-                              readOnly
+                              onChange={() => {}} // Solo para evitar warnings
                               className="peer h-5 w-5 shrink-0 rounded-[4px] border border-gray-300 shadow-xs transition-all 
                                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-500/50
                                        disabled:cursor-not-allowed disabled:opacity-50
@@ -622,7 +627,7 @@ export function ModalEditarProducto({
                             <input
                               type="checkbox"
                               checked={isSelected}
-                              readOnly
+                              onChange={() => {}} // Solo para evitar warnings
                               className="peer h-5 w-5 shrink-0 rounded-[4px] border border-gray-300 shadow-xs transition-all 
                                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-500/50
                                        disabled:cursor-not-allowed disabled:opacity-50
@@ -678,7 +683,7 @@ export function ModalEditarProducto({
                               <input
                                 type="checkbox"
                                 checked={isSelected}
-                                readOnly
+                                onChange={() => {}} // Solo para evitar warnings
                                 className="peer h-5 w-5 shrink-0 rounded-[4px] border border-gray-300 shadow-xs transition-all 
                                          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-500/50
                                          disabled:cursor-not-allowed disabled:opacity-50
@@ -727,7 +732,7 @@ export function ModalEditarProducto({
                                   <input
                                     type="checkbox"
                                     checked={ingredienteProducto.opcional}
-                                    readOnly
+                                    onChange={() => {}} // Solo para evitar warnings
                                     className="peer h-4 w-4 shrink-0 rounded-[4px] border border-gray-300 shadow-xs transition-all 
                                              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-500/50
                                              disabled:cursor-not-allowed disabled:opacity-50
@@ -750,7 +755,7 @@ export function ModalEditarProducto({
                                   <input
                                     type="checkbox"
                                     checked={ingredienteProducto.por_defecto}
-                                    readOnly
+                                    onChange={() => {}} // Solo para evitar warnings
                                     className="peer h-4 w-4 shrink-0 rounded-[4px] border border-gray-300 shadow-xs transition-all 
                                              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-500/50
                                              disabled:cursor-not-allowed disabled:opacity-50
@@ -827,7 +832,6 @@ export function ModalEditarProducto({
         onIngredienteCreado={cargarDatos}
       />
 
-      {/* Modal de imágenes - MOVIDO FUERA del Dialog principal */}
       <ModalImagen
         isOpen={modalImagenOpen}
         onClose={() => setModalImagenOpen(false)}

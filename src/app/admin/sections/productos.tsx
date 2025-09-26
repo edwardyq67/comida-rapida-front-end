@@ -66,7 +66,10 @@ export default function ProductosPage() {
       {/* Contenedor de la tabla con scroll horizontal para tablet */}
       <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">
         <div className="min-w-[800px] md:min-w-0">
-          <DataTableProductos data={productos} />
+          <DataTableProductos
+            data={productos}
+            onProductoActualizado={cargarProductos}
+          />
         </div>
       </div>
 

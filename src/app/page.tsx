@@ -57,7 +57,7 @@ export default function Home() {
           </Link>
 
           {/* Botón Personal de Mesas */}
-          <Link href="/waitstaff">
+          <Link href="/restaurante">
             <div className="group cursor-pointer">
               <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 p-8 border-2 border-transparent hover:border-green-500">
                 <div className="text-center">
@@ -65,13 +65,13 @@ export default function Home() {
                     <FaUsers className="w-10 h-10 text-green-600" />
                   </div>
                   <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                    Meseros
+                    Cliente
                   </h2>
                   <p className="text-gray-600 mb-4">
-                    Toma pedidos y gestiona mesas
+                    Tomar pedidos 
                   </p>
                   <span className="inline-flex items-center text-green-600 font-semibold">
-                    Entrar a Meseros
+                    Entrar a Clientes
                     <svg
                       className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform"
                       fill="none"

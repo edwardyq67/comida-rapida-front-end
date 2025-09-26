@@ -1,3 +1,4 @@
+// components/NavUser.tsx
 "use client"
 
 import {
@@ -30,16 +31,23 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
-export function NavUser({
-  user,
-}: {
+interface NavUserProps {
   user: {
     name: string
     email: string
     avatar: string
   }
-}) {
+  onLogout?: () => void
+}
+
+export function NavUser({ user, onLogout }: NavUserProps) {
   const { isMobile } = useSidebar()
+
+  const handleLogoutClick = () => {
+    if (onLogout) {
+      onLogout()
+    }
+  }
 
   return (
     <SidebarMenu>
@@ -52,7 +60,9 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg">
+                  {user.name.split(' ').map(n => n[0]).join('')}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
@@ -71,7 +81,9 @@ export function NavUser({
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">
+                    {user.name.split(' ').map(n => n[0]).join('')}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
@@ -82,29 +94,25 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
+                <BadgeCheck className="mr-2 size-4" />
+                <span>Mi cuenta</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <CreditCard className="mr-2 size-4" />
+                <span>Facturación</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Bell className="mr-2 size-4" />
+                <span>Notificaciones</span>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
-              Log out
+            <DropdownMenuItem 
+              onClick={handleLogoutClick} 
+              className="text-red-600 focus:text-red-700"
+            >
+              <LogOut className="mr-2 size-4" />
+              <span>Cerrar sesión</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
