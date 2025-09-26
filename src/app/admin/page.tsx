@@ -1,13 +1,20 @@
-'use client'
-import React from 'react';
+"use client";
+import React from "react";
+
+import { SectionCards } from "@/components/sectio-cards";
+import { ChartAreaInteractive } from "@/components/chart-area-Interactive";
 
 export default function AdminPage() {
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Panel de Administración</h1>
-      <p>Bienvenido al panel de administración. Aquí puedes gestionar tu contenido.</p>
+    <div className="flex flex-1 flex-col">
+      <div className="@container/main flex flex-1 flex-col gap-2">
+        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+          <SectionCards />
+          <div className="px-4 lg:px-6">
+            <ChartAreaInteractive />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
-
-

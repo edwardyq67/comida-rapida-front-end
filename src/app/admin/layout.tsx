@@ -1,5 +1,6 @@
-'use client'
-import { AppSidebar } from '@/components/app-sidebar'
+"use client";
+
+import { AppSidebar } from "@/components/app-sidebar";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,18 +8,41 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import { Separator } from '@/components/ui/separator'
+} from "@/components/ui/breadcrumb";
+import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from '@/components/ui/sidebar'
+} from "@/components/ui/sidebar";
 import { ReactNode } from "react";
+
+import Productos from "./sections/productos";
+import Categorias from "./sections/categorias";
+import Adicionales from "./sections/adicionales";
+import Dashboard from "./page";
+import { useAdminStore } from "@/navegacion/useAdminStore";
+
 interface AdminLayoutProps {
-  children: ReactNode;
+  children?: ReactNode;
 }
-export default function AdminLayout({ children }: AdminLayoutProps){
+
+export default function AdminLayout({ children }: AdminLayoutProps) {
+  const { currentPage } = useAdminStore();
+
+  const renderSection = () => {
+    switch (currentPage) {
+      case "Productos":
+        return <Productos />;
+      case "Categorias":
+        return <Categorias />;
+      case "Adicionales":
+        return <Adicionales />;
+      default:
+        return <Dashboard />;
+    }
+  };
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -34,21 +58,21 @@ export default function AdminLayout({ children }: AdminLayoutProps){
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
                   <BreadcrumbLink href="#">
-                    Building Your Application
+                    Admin
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                  <BreadcrumbPage>{currentPage!==""?currentPage:"Dashboard"} </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          {children}
+          {renderSection()}
         </div>
       </SidebarInset>
     </SidebarProvider>
-  )
+  );
 }

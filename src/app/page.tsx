@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import Link from "next/link";
 import { FaUtensils, FaUsers, FaFire, FaConciergeBell } from "react-icons/fa";
 
@@ -6,22 +6,22 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center p-8">
       <div className="max-w-4xl w-full">
-        {/* Header */}
+        {/* Encabezado */}
         <div className="text-center mb-12">
           <div className="flex justify-center mb-4">
             <FaConciergeBell className="text-4xl text-gray-600" />
           </div>
           <h1 className="text-4xl md:text-6xl font-bold text-gray-800 mb-4">
-            Restaurant Management
+            Gestión de Restaurante
           </h1>
           <p className="text-lg md:text-xl text-gray-600">
-            Select your sector to get started
+            Selecciona tu sector para comenzar
           </p>
         </div>
 
         {/* Botones de navegación */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Botón Kitchen */}
+          {/* Botón Cocina */}
           <Link href="/kitchen">
             <div className="group cursor-pointer">
               <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 p-8 border-2 border-transparent hover:border-orange-500">
@@ -30,13 +30,13 @@ export default function Home() {
                     <FaFire className="w-10 h-10 text-orange-600" />
                   </div>
                   <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                    Kitchen
+                    Cocina
                   </h2>
                   <p className="text-gray-600 mb-4">
-                    Manage orders and food preparation
+                    Gestiona pedidos y preparación de comida
                   </p>
                   <span className="inline-flex items-center text-orange-600 font-semibold">
-                    Enter Kitchen
+                    Entrar a Cocina
                     <svg
                       className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform"
                       fill="none"
@@ -56,7 +56,7 @@ export default function Home() {
             </div>
           </Link>
 
-          {/* Botón Waitstaff */}
+          {/* Botón Personal de Mesas */}
           <Link href="/waitstaff">
             <div className="group cursor-pointer">
               <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 p-8 border-2 border-transparent hover:border-green-500">
@@ -65,13 +65,13 @@ export default function Home() {
                     <FaUsers className="w-10 h-10 text-green-600" />
                   </div>
                   <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                    Waitstaff
+                    Meseros
                   </h2>
                   <p className="text-gray-600 mb-4">
-                    Take orders and manage tables
+                    Toma pedidos y gestiona mesas
                   </p>
                   <span className="inline-flex items-center text-green-600 font-semibold">
-                    Enter Waitstaff
+                    Entrar a Meseros
                     <svg
                       className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform"
                       fill="none"
@@ -92,12 +92,12 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* Footer */}
+        {/* Pie de página */}
         <div className="text-center mt-12">
           <p className="text-gray-500 text-sm">
-            Admin access?{" "}
-            <a href="/admin" className="text-blue-600 hover:underline">
-              Contact administrator
+            ¿Acceso de administrador?{" "}
+            <a href="/login" className="text-blue-600 hover:underline">
+              Iniciar sesión como administrador
             </a>
           </p>
         </div>

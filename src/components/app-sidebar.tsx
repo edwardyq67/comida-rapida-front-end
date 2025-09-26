@@ -17,18 +17,6 @@ import { NavMain } from "./nav-main"
 import { NavProjects } from "./nav-projects"
 import { NavUser } from "./nav-user"
 
-// Tipos
-interface NavItem {
-  title: string
-  url: string
-  icon: LucideIcon
-}
-
-interface ProjectItem {
-  name: string
-  url: string
-  icon: LucideIcon
-}
 
 // Datos
 const data = {
@@ -45,13 +33,13 @@ const data = {
     },
   ],
   projects: [
-    { name: "Dashboard", url: "/admin", icon: PieChart },
-    { name: "Productos", url: "/admin/productos", icon: Package },
-    { name: "Categorías e Ingredientes", url: "/admin/categorias", icon: Settings2 },
-    { name: "Adicionales", url: "/admin/adicionales", icon: PlusSquare },
-    { name: "Pedidos", url: "/admin/pedidos", icon: ShoppingCart },
-    { name: "Menú del Día", url: "/admin/menu-dia", icon: Tags },
-    { name: "Ofertas Especiales", url: "/admin/ofertas", icon: Tags },
+    { name: "Dashboard", icon: PieChart },
+    { name: "Productos", icon: Package },
+    { name: "Categorías e Ingredientes", icon: Settings2 },
+    { name: "Adicionales", icon: PlusSquare },
+    { name: "Pedidos", icon: ShoppingCart },
+    { name: "Menú del Día",icon: Tags },
+    { name: "Ofertas Especiales", icon: Tags },
   ],
 }
 
