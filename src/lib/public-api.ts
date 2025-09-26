@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API_BASE_URL =
-  process.env.API_URL_PUBLIC || "https://comida-rapida-back-end-o5k9.vercel.app/public-panel";
+  process.env.NEXT_PUBLIC_API_URL_PUBLIC;
 
 // Configuración base de axios (público - no necesita token)
 const publicApiClient = axios.create({

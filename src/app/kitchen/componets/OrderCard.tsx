@@ -26,9 +26,9 @@ export const OrderCard = ({ order, onStatusChange }: OrderCardProps) => {
 
   const getNextStatus = (currentStatus: string) => {
     switch (currentStatus.toUpperCase()) {
-      case 'PENDIENTE':
+      case 'PENDIENTES':
         return { id: 2, name: 'COCINADO' };
-      case 'COCINADO':
+      case 'COCINADOS':
         return { id: 3, name: 'FALTA PAGAR' };
       case 'FALTA PAGAR':
         return { id: 4, name: 'PAGADO' };

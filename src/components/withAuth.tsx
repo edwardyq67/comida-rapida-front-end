@@ -1,35 +1,41 @@
-// components/withAuth.tsx
+// withAuth.tsx - SOLUCIÓN URGENTE
 "use client";
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { authService } from '@/lib/auth-api';
+import { useAuthStore } from '@/lib/store/authStore';
 
-const withAuth = (WrappedComponent: React.ComponentType) => {
-  return (props: any) => {
+const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
+  const WithAuthComponent = (props: P) => {
     const router = useRouter();
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const { isAuthenticated, checkAuth } = useAuthStore();
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-      const checkAuth = async () => {
-        try {
-          const authResult = await authService.verifyAuth();
-          
-          if (!authResult.authenticated) {
-            router.replace('/login');
-            return;
-          }
-          
-          setIsAuthenticated(true);
+      const checkAuthentication = async () => {
+        // Primero confiar en el estado persistente de Zustand
+        if (isAuthenticated) {
           setIsLoading(false);
+          return;
+        }
+        
+        // Si no está autenticado en el estado, intentar verificar
+        try {
+          await checkAuth();
         } catch (error) {
           console.error('Error verifying auth:', error);
-          router.replace('/login');
+        } finally {
+          setIsLoading(false);
         }
       };
 
-      checkAuth();
-    }, [router]);
+      checkAuthentication();
+    }, [isAuthenticated, checkAuth]);
+
+    useEffect(() => {
+      if (!isLoading && !isAuthenticated) {
+        router.replace('/login');
+      }
+    }, [isLoading, isAuthenticated, router]);
 
     if (isLoading) {
       return (
@@ -42,6 +48,9 @@ const withAuth = (WrappedComponent: React.ComponentType) => {
 
     return isAuthenticated ? <WrappedComponent {...props} /> : null;
   };
+
+  WithAuthComponent.displayName = `WithAuth(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
+  return WithAuthComponent;
 };
 
 export default withAuth;

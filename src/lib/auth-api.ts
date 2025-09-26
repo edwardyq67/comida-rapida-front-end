@@ -1,15 +1,16 @@
 // lib/auth-api.ts
-import axios from 'axios';
+import axios from "axios";
 
-const API_URL_AUTH = process.env.NEXT_PUBLIC_API_URL_AUTH|| 'https://comida-rapida-back-end-o5k9.vercel.app/auth';
+const API_URL_AUTH = process.env.NEXT_PUBLIC_API_URL_AUTH;
 
+// ✅ Configuración CORRECTA para trabajar con cookies 'jwt'
 const authApi = axios.create({
   baseURL: API_URL_AUTH,
-  withCredentials: true,
+  withCredentials: true, // 👈 Esto envía automáticamente la cookie 'jwt'
 });
 
 export interface LoginData {
-  email: string; // 👈 Cambiado de username a email
+  email: string;
   password: string;
 }
 
@@ -25,9 +26,10 @@ export interface AuthResponse {
     id: number;
     email: string;
     nombre?: string;
-    rol: string; // 👈 Usa 'rol' en lugar de 'role'
+    rol: string;
+    creadoEn?: string;
+    actualizadoEn?: string;
   };
-  token?: string;
 }
 
 export interface User {
@@ -49,38 +51,53 @@ export interface VerifyResponse {
 class AuthService {
   async login(loginData: LoginData): Promise<AuthResponse> {
     try {
-      const response = await authApi.post<AuthResponse>('/login', loginData);
+      console.log("🔐 Iniciando sesión...");
+      console.log("URL de login:", `${API_URL_AUTH}/login`);
+      
+      const response = await authApi.post<AuthResponse>("/login", loginData);
+      console.log("✅ Login exitoso - Response:", response.data);
+      console.log("✅ Cookie 'jwt' establecida automáticamente por el backend");
+      
       return response.data;
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Error al iniciar sesión');
+      console.error("❌ Error en login:", error.response?.data);
+      throw new Error(
+        error.response?.data?.message || "Error al iniciar sesión"
+      );
     }
   }
 
   async register(registerData: RegisterData): Promise<AuthResponse> {
     try {
-      const response = await authApi.post<AuthResponse>('/register', registerData);
+      const response = await authApi.post<AuthResponse>("/register", registerData);
       return response.data;
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Error al registrar usuario');
+      throw new Error(
+        error.response?.data?.message || "Error al registrar usuario"
+      );
     }
   }
 
   async logout(): Promise<{ message: string }> {
     try {
-      const response = await authApi.post<{ message: string }>('/logout');
+      console.log("🔒 Cerrando sesión...");
+      const response = await authApi.post<{ message: string }>("/logout");
+      console.log("✅ Logout exitoso");
       return response.data;
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Error al cerrar sesión');
+      throw new Error(
+        error.response?.data?.message || "Error al cerrar sesión"
+      );
     }
   }
 
-  async verifyAuth(): Promise<VerifyResponse> {
-    try {
-      const response = await authApi.get<VerifyResponse>('/verify');
-      return response.data;
-    } catch (error) {
-      return { authenticated: false };
-    }
+async verifyAuth(): Promise<VerifyResponse> {
+  try {
+    const response = await authApi.get<VerifyResponse>("/verify");
+    return response.data;
+  } catch (error: any) {
+    return { authenticated: false };
+  }
   }
 }
 

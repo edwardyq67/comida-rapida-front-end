@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/store/authStore";
 import Link from "next/link";
-import { Home } from "lucide-react"; // 👈 Importamos el ícono
+import { Home, Info } from "lucide-react"; // 👈 Agregamos el ícono Info
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -33,6 +33,13 @@ export default function LoginForm() {
     }
   };
 
+  // Función para autocompletar credenciales de prueba
+  const fillDemoCredentials = () => {
+    setEmail("admin@ejemplo.com");
+    setPassword("admin123");
+    clearError();
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center p-8">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 relative">
@@ -49,6 +56,25 @@ export default function LoginForm() {
             Iniciar Sesión
           </h1>
           <p className="text-gray-600">Acceso al panel de administración</p>
+        </div>
+
+        {/* 🔹 Cuadro con credenciales de prueba */}
+        <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-start space-x-2">
+            <Info className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+            <div className="text-sm text-blue-800">
+              <p className="font-medium mb-1">Credenciales de prueba:</p>
+              <p><strong>Email:</strong> admin@ejemplo.com</p>
+              <p><strong>Contraseña:</strong> admin123</p>
+              <button
+                type="button"
+                onClick={fillDemoCredentials}
+                className="mt-2 text-blue-700 hover:text-blue-900 underline text-xs font-medium"
+              >
+                Autocompletar credenciales
+              </button>
+            </div>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -101,19 +127,6 @@ export default function LoginForm() {
           >
             {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
           </button>
-
-          {/* Botón de Registro */}
-          <div className="text-center pt-4 border-t border-gray-200">
-            <p className="text-gray-600 text-sm">
-              ¿No tienes una cuenta?{" "}
-              <Link
-                href="/register"
-                className="text-blue-600 hover:underline font-medium"
-              >
-                Regístrate aquí
-              </Link>
-            </p>
-          </div>
         </form>
       </div>
     </div>

@@ -13,10 +13,10 @@ interface KitchenTabsProps {
 }
 
 const statusTabs = [
-  { id: 'PENDIENTE', name: 'Pendientes', color: 'yellow' },
-  { id: 'COCINADO', name: 'Cocinados', color: 'green' },
-  { id: 'FALTA PAGAR', name: 'Falta Pagar', color: 'orange' },
-  { id: 'PAGADO', name: 'Pagados', color: 'blue' },
+  { id: 'PENDIENTES', name: 'PENDIENTES', color: 'yellow' },
+  { id: 'COCINADOS', name: 'COCINADOS', color: 'green' },
+  { id: 'FALTA PAGAR', name: 'FALTA PAGAR', color: 'orange' },
+  { id: 'PAGADOS', name: 'PAGADOS', color: 'blue' },
 ];
 
 export const KitchenTabs = ({ 
@@ -31,7 +31,6 @@ export const KitchenTabs = ({
 
   // Asegurar que orders siempre sea un array
   const normalizedOrders = Array.isArray(orders) ? orders : [];
-
   // Effect para la actualización automática cada 10 segundos
   useEffect(() => {
     const intervalId = setInterval(async () => {

@@ -21,29 +21,32 @@ export const useAuthStore = create<AuthState>()(
       isLoading: false,
       error: null,
 
-      login: async (credentials: LoginData) => {
-        set({ isLoading: true, error: null });
+    login: async (credentials: LoginData) => {
+  set({ isLoading: true, error: null });
 
-        try {
-          const response = await authService.login(credentials);
+  try {
+    const response = await authService.login(credentials);
+    console.log("Respuesta del login:", response); // ← Agrega esto
 
-          if (response.user && response.user.rol === "ADMIN") {
-            set({
-              user: response.user,
-              isAuthenticated: true, 
-              isLoading: false,
-            });
-          } else {
-            
-          }
-        } catch (error: any) {
-          set({
-            error: error.message,
-            isLoading: false,
-          });
-          throw error;
-        }
-      },
+    if (response.user && response.user.rol === "ADMIN") {
+      console.log("Usuario es ADMIN, estableciendo autenticación"); // ← Esto
+      set({
+        user: response.user,
+        isAuthenticated: true, 
+        isLoading: false,
+      });
+    } else {
+      console.log("Usuario NO es ADMIN o no tiene rol"); // ← Y esto
+      set({
+        error: "Acceso denegado: se requiere rol de administrador",
+        isLoading: false,
+      });
+      throw new Error("Acceso denegado: se requiere rol de administrador");
+    }
+  } catch (error: any) {
+    // ...
+  }
+},
 
       logout: async () => {
         set({ isLoading: true });
