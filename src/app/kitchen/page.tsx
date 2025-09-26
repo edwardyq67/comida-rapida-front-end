@@ -6,7 +6,7 @@ import { Pedido } from '@/lib/public-api';
 import { KitchenTabs } from './componets/KitchenTabs';
 
 const KitchenPage = () => {
-  const [activeTab, setActiveTab] = useState('PENDIENTE');
+  const [activeTab, setActiveTab] = useState('PENDIENTES');
   const [orders, setOrders] = useState<Pedido[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
