@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "package.json", "use": "@vercel/next" }
+  ],
+  "env": {
+    "NEXT_PUBLIC_API_URL_ADMIN": "@NEXT_PUBLIC_API_URL_ADMIN",
+    "NEXT_PUBLIC_API_URL_PUBLIC": "@NEXT_PUBLIC_API_URL_PUBLIC",
+    "NEXT_PUBLIC_API_URL_AUTH": "@NEXT_PUBLIC_API_URL_AUTH",
+    "NEXT_PUBLIC_API_URL_IMAGES": "@NEXT_PUBLIC_API_URL_IMAGES"
+  }
+}
